@@ -3,12 +3,10 @@
 #if defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
 
 #include <QtCore/QCoreApplication>
-#include <QtCore/QMutex>
-#include <QtCore/QMutexLocker>
 #include <QtCore/QSocketNotifier>
 #include <QtCore/QVariant>
-#include <cstring>
-#include <cerrno>
+#include <string.h>
+#include <errno.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/types.h>
@@ -42,7 +40,7 @@ SignalWatcherPrivate::sigdata_t SignalWatcherPrivate::signal_data[NSIG];
 SignalWatcherPrivate::SignalWatcherPrivate(SignalWatcher* const w)
 	: q_ptr(w)
 {
-	std::memset(SignalWatcherPrivate::signal_data, 0, sizeof(SignalWatcherPrivate::signal_data));
+	memset(SignalWatcherPrivate::signal_data, 0, sizeof(SignalWatcherPrivate::signal_data));
 }
 
 SignalWatcherPrivate::~SignalWatcherPrivate(void)
@@ -63,7 +61,7 @@ bool SignalWatcherPrivate::watch(int sig)
 		}
 
 		if (::socketpair(AF_UNIX, SOCK_STREAM, 0, SignalWatcherPrivate::signal_data[sig].fd)) {
-			qCritical("Failed to create a socket pair: %s", std::strerror(errno));
+			qCritical("Failed to create a socket pair: %s", strerror(errno));
 			return false;
 		}
 
@@ -179,23 +177,15 @@ bool SignalWatcher::unwatch(int sig)
 
 #endif // defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
 
+Q_GLOBAL_STATIC(SignalWatcher, sw_instance)
+
 SignalWatcher::~SignalWatcher(void)
 {
 }
 
 SignalWatcher* SignalWatcher::instance(void)
 {
-	static SignalWatcher* self = 0;
-	static QMutex mutex;
-
-	if (!self) {
-		QMutexLocker locker(&mutex);
-		if (!self) {
-			self = new SignalWatcher(qApp);
-		}
-	}
-
-	return self;
+	return sw_instance();
 }
 
 bool SignalWatcher::watch(int sig, bool watch)
