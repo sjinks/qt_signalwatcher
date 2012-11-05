@@ -22,6 +22,7 @@ private:
 		int fd[2];
 	};
 
+	static SignalWatcher* instance;
 	static SignalWatcherPrivate::sigdata_t signal_data[NSIG];
 
 	Q_DISABLE_COPY(SignalWatcherPrivate)
@@ -35,6 +36,7 @@ private:
 	void _q_handleSignal(void);
 };
 
+SignalWatcher* SignalWatcherPrivate::instance = 0;
 SignalWatcherPrivate::sigdata_t SignalWatcherPrivate::signal_data[NSIG];
 
 SignalWatcherPrivate::SignalWatcherPrivate(SignalWatcher* const w)
@@ -139,8 +141,8 @@ void SignalWatcherPrivate::_q_handleSignal(void)
 	sn->setEnabled(true);
 }
 
-SignalWatcher::SignalWatcher(QObject* parent)
-	: QObject(parent), d_ptr(new SignalWatcherPrivate(this))
+SignalWatcher::SignalWatcher(void)
+	: QObject(qApp), d_ptr(new SignalWatcherPrivate(this))
 {
 }
 
@@ -158,8 +160,8 @@ bool SignalWatcher::unwatch(int sig)
 
 #else
 
-SignalWatcher::SignalWatcher(QObject* parent)
-	: QObject(parent)
+SignalWatcher::SignalWatcher(void)
+	: QObject(qApp)
 {
 }
 
@@ -177,20 +179,18 @@ bool SignalWatcher::unwatch(int sig)
 
 #endif // defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
 
-Q_GLOBAL_STATIC(SignalWatcher, sw_instance)
-
 SignalWatcher::~SignalWatcher(void)
 {
+	SignalWatcherPrivate::instance = 0;
 }
 
 SignalWatcher* SignalWatcher::instance(void)
 {
-	return sw_instance();
-}
+	if (!SignalWatcherPrivate::instance) {
+		SignalWatcherPrivate::instance = new SignalWatcher();
+	}
 
-bool SignalWatcher::watch(int sig, bool watch)
-{
-	return (watch) ? this->watch(sig) : this->unwatch(sig);
+	return SignalWatcherPrivate::instance;
 }
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
