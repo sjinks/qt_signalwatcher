@@ -18,7 +18,7 @@ Q_SIGNALS:
 	void unixSignal(int);
 
 private:
-	explicit SignalWatcher(QObject* parent);
+	explicit SignalWatcher(void);
 	Q_DISABLE_COPY(SignalWatcher)
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
