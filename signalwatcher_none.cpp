@@ -1,6 +1,8 @@
 #include <QtCore/QCoreApplication>
 #include "signalwatcher.h"
 
+class SignalWatcherPrivate {}
+
 static SignalWatcher* g_instance = 0;
 
 SignalWatcher::SignalWatcher(void)
