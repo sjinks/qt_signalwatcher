@@ -14,6 +14,8 @@ public:
 	bool unwatch(int sig);
 	bool watch(int sig, bool watch);
 
+	static const char* backend(void);
+
 Q_SIGNALS:
 	void unixSignal(int);
 

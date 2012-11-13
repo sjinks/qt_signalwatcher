@@ -35,3 +35,8 @@ SignalWatcher* SignalWatcher::instance(void)
 
 	return g_instance;
 }
+
+const char* SignalWatcher::backend(void)
+{
+	return "stub";
+}

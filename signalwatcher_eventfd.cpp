@@ -212,4 +212,9 @@ SignalWatcher* SignalWatcher::instance(void)
 	return SignalWatcherPrivate::instance;
 }
 
+const char* SignalWatcher::backend(void)
+{
+	return "eventfd";
+}
+
 #include "moc_signalwatcher.cpp"
