@@ -1,6 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include <QtCore/QSocketNotifier>
 #include <errno.h>
+#include <string.h>
 #include <signal.h>
 #include <sys/signalfd.h>
 #include "signalwatcher.h"
@@ -14,7 +15,7 @@ private:
 	static SignalWatcher* instance;
 	static QSocketNotifier* notifier;
 	static int fd;
-	static sigset_t mask;
+	static bool map[NSIG];
 
 	Q_DISABLE_COPY(SignalWatcherPrivate)
 	Q_DECLARE_PUBLIC(SignalWatcher)
@@ -31,12 +32,12 @@ private:
 SignalWatcher* SignalWatcherPrivate::instance   = 0;
 QSocketNotifier* SignalWatcherPrivate::notifier = 0;
 int SignalWatcherPrivate::fd                    = -1;
-sigset_t SignalWatcherPrivate::mask;
+bool SignalWatcherPrivate::map[NSIG];
 
 SignalWatcherPrivate::SignalWatcherPrivate(SignalWatcher* const w)
 	: q_ptr(w)
 {
-	sigprocmask(SIG_SETMASK, 0, &SignalWatcherPrivate::mask);
+	memset(SignalWatcherPrivate::map, 0, sizeof(SignalWatcherPrivate::map));
 }
 
 SignalWatcherPrivate::~SignalWatcherPrivate(void)
@@ -90,20 +91,24 @@ int SignalWatcherPrivate::signalfd_wrapper(int fd, const sigset_t* mask)
 bool SignalWatcherPrivate::watch(int sig)
 {
 	if (sig < NSIG) {
-		if (0 != sigismember(&SignalWatcherPrivate::mask, sig)) {
+		if (map[sig]) {
 			// We have already installed a handler for this signal
 			return false;
 		}
 
-		sigaddset(&SignalWatcherPrivate::mask, sig);
-		sigprocmask(SIG_SETMASK, &SignalWatcherPrivate::mask, 0);
+		sigset_t mask;
+		sigset_t old;
+		sigemptyset(&mask);
+		sigaddset(&mask, sig);
+		sigprocmask(SIG_BLOCK, &mask, &old);
 		int f = SignalWatcherPrivate::signalfd_wrapper(SignalWatcherPrivate::fd, &mask);
 		if (-1 == f) {
 			qErrnoWarning("%s: signalfd() failed", Q_FUNC_INFO);
-			sigdelset(&SignalWatcherPrivate::mask, sig);
-			sigprocmask(SIG_SETMASK, &SignalWatcherPrivate::mask, 0);
+			sigprocmask(SIG_SETMASK, &old, 0);
 			return false;
 		}
+
+		SignalWatcherPrivate::map[sig] = true;
 
 		if (-1 == SignalWatcherPrivate::fd) {
 			Q_ASSERT(SignalWatcherPrivate::notifier == 0);
@@ -126,8 +131,11 @@ bool SignalWatcherPrivate::unwatch(int sig)
 	if (sig < NSIG && -1 != SignalWatcherPrivate::fd) {
 		Q_ASSERT(SignalWatcherPrivate::notifier != 0);
 
-		sigdelset(&SignalWatcherPrivate::mask, sig);
-		sigprocmask(SIG_SETMASK, &SignalWatcherPrivate::mask, 0);
+		sigset_t mask;
+		sigemptyset(&mask);
+		sigaddset(&mask, sig);
+		sigprocmask(SIG_UNBLOCK, &mask, 0);
+		map[sig] = false;
 		int f = SignalWatcherPrivate::signalfd_wrapper(SignalWatcherPrivate::fd, &mask);
 		return f != -1;
 	}

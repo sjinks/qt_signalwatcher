@@ -118,14 +118,14 @@ bool SignalWatcherPrivate::watch(int sig)
 			return false;
 		}
 
-		if (SignalWatcherPrivate::create_comm_obj(SignalWatcherPrivate::signal_data[sig].fd)) {
+		if (-1 == SignalWatcherPrivate::create_comm_obj(SignalWatcherPrivate::signal_data[sig].fd)) {
 			my_close(SignalWatcherPrivate::signal_data[sig].fd[0]);
 			my_close(SignalWatcherPrivate::signal_data[sig].fd[1]);
 			return false;
 		}
 
 		Q_Q(SignalWatcher);
-		QSocketNotifier* n = new QSocketNotifier(SignalWatcherPrivate::signal_data[sig].fd[1], QSocketNotifier::Read, q);
+		QSocketNotifier* n = new QSocketNotifier(SignalWatcherPrivate::signal_data[sig].fd[0], QSocketNotifier::Read, q);
 		n->setProperty("sig", QVariant::fromValue(sig));
 		QObject::connect(n, SIGNAL(activated(int)), q, SLOT(_q_handleSignal()));
 		SignalWatcherPrivate::signal_data[sig].sn = n;
@@ -165,11 +165,11 @@ bool SignalWatcherPrivate::unwatch(int sig)
 
 void SignalWatcherPrivate::signalHandler(int sig)
 {
-	Q_ASSERT(sn < NSIG);
+	Q_ASSERT(sig < NSIG);
 	if (SignalWatcherPrivate::signal_data[sig].sn) {
 		char a = 1;
-		if (sizeof(a) != safe_write(SignalWatcherPrivate::signal_data[sig].fd[0], &a, sizeof(a))) {
-			Q_ASSERT(false);
+		if (sizeof(a) != safe_write(SignalWatcherPrivate::signal_data[sig].fd[1], &a, sizeof(a))) {
+			qErrnoWarning("%s: write() failed", Q_FUNC_INFO);
 		}
 	}
 }
@@ -190,8 +190,8 @@ void SignalWatcherPrivate::_q_handleSignal(void)
 	Q_ASSERT(SignalWatcherPrivate::signal_data[signo].sn == sn);
 
 	char tmp;
-	if (sizeof(tmp) != safe_read(SignalWatcherPrivate::signal_data[signo].fd[1], &tmp, sizeof(tmp))) {
-		Q_ASSERT(false);
+	if (sizeof(tmp) != safe_read(SignalWatcherPrivate::signal_data[signo].fd[0], &tmp, sizeof(tmp))) {
+		qErrnoWarning("%s: write() failed", Q_FUNC_INFO);
 	}
 
 	Q_EMIT q->unixSignal(signo);

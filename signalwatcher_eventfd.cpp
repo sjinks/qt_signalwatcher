@@ -136,7 +136,7 @@ bool SignalWatcherPrivate::unwatch(int sig)
 		if (SignalWatcherPrivate::signal_data[sig].sn) {
 			delete SignalWatcherPrivate::signal_data[sig].sn;
 			SignalWatcherPrivate::signal_data[sig].sn = 0;
-			::close(SignalWatcherPrivate::signal_data[sig].fd);
+			my_close(SignalWatcherPrivate::signal_data[sig].fd);
 		}
 
 		sigaction(sig, &sa, 0);
@@ -148,7 +148,7 @@ bool SignalWatcherPrivate::unwatch(int sig)
 
 void SignalWatcherPrivate::signalHandler(int sig)
 {
-	Q_ASSERT(sn < NSIG);
+	Q_ASSERT(sig < NSIG);
 	if (SignalWatcherPrivate::signal_data[sig].sn) {
 		eventfd_t value = 1;
 		if (safe_write(SignalWatcherPrivate::signal_data[sig].fd, &value, sizeof(value)) != sizeof(value)) {
