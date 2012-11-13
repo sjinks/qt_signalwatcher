@@ -1,8 +1,8 @@
+#include <QtCore/QCoreApplication>
 #include "signalwatcher.h"
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
 
-#include <QtCore/QCoreApplication>
 #include <QtCore/QSocketNotifier>
 #include <QtCore/QVariant>
 #include <string.h>
