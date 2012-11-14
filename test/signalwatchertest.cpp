@@ -78,6 +78,12 @@ void SignalWatcherTest::testBug1(void)
 	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 1);
+	spy.clear();
+
 	QCOMPARE(w->unwatch(SIGCHLD), true);
+	QCOMPARE(::kill(getpid(), SIGWINCH), 0);
+	QCoreApplication::processEvents();
+	QCOMPARE(spy.count(), 1);
+
 	QCOMPARE(w->unwatch(SIGWINCH), true);
 }
