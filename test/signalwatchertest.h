@@ -6,7 +6,7 @@
 class SignalWatcherTest : public QObject {
 	Q_OBJECT
 public:
-	explicit SignalWatcherTest(QObject *parent = 0);
+	explicit SignalWatcherTest(QObject* parent = 0);
 
 private Q_SLOTS:
 	void initTestCase(void);

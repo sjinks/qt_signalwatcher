@@ -1,6 +1,5 @@
 #include <QtTest/QtTest>
 #include <signal.h>
-#include <unistd.h>
 #include "signalwatcher.h"
 #include "signalwatchertest.h"
 
