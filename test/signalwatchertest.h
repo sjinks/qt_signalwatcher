@@ -12,6 +12,7 @@ private Q_SLOTS:
 	void initTestCase(void);
 	void testInterface(void);
 	void testImplementation(void);
+	void testBug1(void);
 };
 
 #endif // SIGNALWATCHERTEST_H

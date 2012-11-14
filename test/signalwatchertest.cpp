@@ -45,7 +45,6 @@ void SignalWatcherTest::testImplementation(void)
 	QSignalSpy spy(w, SIGNAL(unixSignal(int)));
 
 	// SIGCHLD is ignored by default
-
 	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 0);
@@ -65,4 +64,20 @@ void SignalWatcherTest::testImplementation(void)
 	QCOMPARE(::kill(getpid(), SIGWINCH), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 0);
+}
+
+void SignalWatcherTest::testBug1(void)
+{
+	SignalWatcher* w = SignalWatcher::instance();
+	QVERIFY(w != 0);
+
+	QSignalSpy spy(w, SIGNAL(unixSignal(int)));
+
+	QCOMPARE(w->watch(SIGCHLD), true);
+	QCOMPARE(w->watch(SIGWINCH), true);
+	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
+	QCoreApplication::processEvents();
+	QCOMPARE(spy.count(), 1);
+	QCOMPARE(w->unwatch(SIGCHLD), true);
+	QCOMPARE(w->unwatch(SIGWINCH), true);
 }
