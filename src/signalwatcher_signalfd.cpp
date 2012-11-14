@@ -96,11 +96,11 @@ bool SignalWatcherPrivate::watch(int sig)
 			return false;
 		}
 
-		sigset_t mask;
 		sigset_t old;
-		sigemptyset(&mask);
+		sigset_t mask;
+		sigprocmask(SIG_BLOCK, 0, &mask);
 		sigaddset(&mask, sig);
-		sigprocmask(SIG_BLOCK, &mask, &old);
+		sigprocmask(SIG_SETMASK, &mask, &old);
 		int f = SignalWatcherPrivate::signalfd_wrapper(SignalWatcherPrivate::fd, &mask);
 		if (-1 == f) {
 			qErrnoWarning("%s: signalfd() failed", Q_FUNC_INFO);
@@ -132,9 +132,9 @@ bool SignalWatcherPrivate::unwatch(int sig)
 		Q_ASSERT(SignalWatcherPrivate::notifier != 0);
 
 		sigset_t mask;
-		sigemptyset(&mask);
-		sigaddset(&mask, sig);
-		sigprocmask(SIG_UNBLOCK, &mask, 0);
+		sigprocmask(SIG_UNBLOCK, 0, &mask);
+		sigdelset(&mask, sig);
+		sigprocmask(SIG_SETMASK, &mask, 0);
 		map[sig] = false;
 		int f = SignalWatcherPrivate::signalfd_wrapper(SignalWatcherPrivate::fd, &mask);
 		return f != -1;
