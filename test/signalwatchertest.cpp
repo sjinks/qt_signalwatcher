@@ -44,23 +44,23 @@ void SignalWatcherTest::testImplementation(void)
 	QSignalSpy spy(w, SIGNAL(unixSignal(int)));
 
 	// SIGCHLD is ignored by default
-	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
+	QCOMPARE(::raise(SIGCHLD), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 0);
 
 	QCOMPARE(w->watch(SIGCHLD), true);
-	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
+	QCOMPARE(::raise(SIGCHLD), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 1);
 	QCOMPARE(spy.takeFirst().at(0).toInt(), SIGCHLD);
 
 	QCOMPARE(w->unwatch(SIGCHLD), true);
-	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
+	QCOMPARE(::raise(SIGCHLD), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 0);
 
 	// SIGWINCH is ignored by default
-	QCOMPARE(::kill(getpid(), SIGWINCH), 0);
+	QCOMPARE(::raise(SIGWINCH), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 0);
 }
@@ -74,13 +74,13 @@ void SignalWatcherTest::testBug1(void)
 
 	QCOMPARE(w->watch(SIGCHLD), true);
 	QCOMPARE(w->watch(SIGWINCH), true);
-	QCOMPARE(::kill(getpid(), SIGCHLD), 0);
+	QCOMPARE(::raise(SIGCHLD), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 1);
 	spy.clear();
 
 	QCOMPARE(w->unwatch(SIGCHLD), true);
-	QCOMPARE(::kill(getpid(), SIGWINCH), 0);
+	QCOMPARE(::raise(SIGWINCH), 0);
 	QCoreApplication::processEvents();
 	QCOMPARE(spy.count(), 1);
 
