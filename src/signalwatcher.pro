@@ -1,9 +1,10 @@
 QT      -= gui
 TARGET   = signalwatcher
 TEMPLATE = lib
-CONFIG  += staticlib
+CONFIG  += staticlib release
 
-HEADERS += signalwatcher.h \
+HEADERS += \
+	signalwatcher.h \
 	helpers_p.h
 
 unix:!symbian {
