@@ -1,20 +1,14 @@
 QT      -= gui
 TARGET   = signalwatcher
 TEMPLATE = lib
-CONFIG  += staticlib release
+CONFIG  += staticlib create_prl release
+DESTDIR  = ../lib
 
 HEADERS += \
 	signalwatcher.h \
 	helpers_p.h
 
-unix:!symbian {
-	maemo5 {
-		target.path = /opt/usr/lib
-	} else {
-		target.path = /usr/lib
-	}
-	INSTALLS += target
-}
+headers.files = signalwatcher.h
 
 unix:!symbian {
 	exists(/usr/include/sys/signalfd.h):     SOURCES += signalwatcher_signalfd.cpp
@@ -24,3 +18,28 @@ unix:!symbian {
 else {
 	SOURCES += signalwatcher_none.cpp
 }
+
+unix {
+	CONFIG += create_pc
+	headers.path = /usr/include
+
+	QMAKE_PKGCONFIG_NAME        = signalwatcher
+	QMAKE_PKGCONFIG_DESCRIPTION = "Signal Watcher for Qt"
+	QMAKE_PKGCONFIG_LIBDIR      = $$target.path
+	QMAKE_PKGCONFIG_INCDIR      = $$headers.path
+	QMAKE_PKGCONFIG_DESTDIR     = pkgconfig
+}
+else {
+	headers.path = $$DESTDIR
+}
+
+unix:!symbian {
+	maemo5 {
+		target.path = /opt/usr/lib
+	}
+	else {
+		target.path = /usr/lib
+	}
+}
+
+INSTALLS += target headers

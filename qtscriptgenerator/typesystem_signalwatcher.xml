@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<typesystem package="signalwatcher">
+	<rejection class="*" function-name="d_func"/>
+	<rejection class="*" field-name="d_ptr"/>
+	<object-type name="SignalWatcher">
+		<extra-includes>
+			<include file-name="QEvent" location="global"/>
+		</extra-includes>
+	</object-type>
+</typesystem>

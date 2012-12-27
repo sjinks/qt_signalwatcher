@@ -15,4 +15,4 @@ SOURCES += \
 DEFINES += SRCDIR=\\\"$$PWD/\\\"
 
 INCLUDEPATH += ../src
-LIBS        += -L../src -lsignalwatcher
+LIBS        += -L../lib -lsignalwatcher
