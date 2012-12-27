@@ -1,0 +1,5 @@
+*.o
+Makefile
+Makefile.*
+moc_*.cpp
+/test/tst_signalwatchertest
