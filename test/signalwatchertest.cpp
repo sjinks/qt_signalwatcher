@@ -12,11 +12,21 @@ void SignalWatcherTest::initTestCase(void)
 {
 	SignalWatcher* w = SignalWatcher::instance();
 	if (!w) {
-		QSKIP("Failed to instantiate SignalWatcher", SkipAll);
+		QSKIP(
+			"Failed to instantiate SignalWatcher"
+#if QT_VERSION < 0x050000
+			, SkipAll
+#endif
+		);
 	}
 
 	if (!qstrcmp("stub", w->backend())) {
-		QSKIP("SignalWatcher is a stub", SkipAll);
+		QSKIP(
+			"SignalWatcher is a stub"
+#if QT_VERSION < 0x050000
+			, SkipAll
+#endif
+		);
 	}
 
 	qDebug("SignalWatcher uses '%s' backend", w->backend());
