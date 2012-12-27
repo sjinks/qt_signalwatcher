@@ -13,7 +13,25 @@ qmake signalwatcher.pro && make
 
 Some systems have `qmake-qt4` instead of `qmake`.
 
-The above command will generate `src/libsigwatch.a` (the library itself), `src/libsigwatch.prl` (this file is used by Qt to link the library properly) and `test/tst_signalwatchertest` (this binary can be used to verify that the code works as expected).
+The above commands will generate the static library and `.prl` file in `../lib` directory and `test/tst_signalwatchertest` (this binary can be used to verify that the code works as expected).
+
+**Install**
+
+After completing Build step run
+
+*nix:
+```
+sudo make install
+```
+
+Windows:
+```
+nmake install
+```
+
+For Windows this will copy `signalwatcher.h` to `../lib` directory.
+For *nix this will install `signalwatcher.h` to `/usr/include`, `libsignalwatcher.a` and `libsignalwatcher.prl` to `/usr/lib`, `libsignalwatcher.pc` to `/usr/lib/pkgconfig`.
+
 
 **Usage**
 
@@ -39,6 +57,13 @@ void mySigTermHandler(void)
 Add these lines to the project file:
 
 ```
-CONFIG += use_prl
+CONFIG += link_prl
 LIBS   += -L/path/to/libsignalwatcher -lsignalwatcher
+```
+
+On *nix you can use this alternative (provided that the library was properly installed):
+
+```
+CONFIG    += link_pkgconfig
+PKGCONFIG += signalwatcher
 ```
