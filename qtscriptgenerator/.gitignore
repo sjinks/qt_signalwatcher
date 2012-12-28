@@ -2,4 +2,4 @@
 .preprocessed.tmp
 /doc
 /generated_cpp
-/qtscript_signalwatcher
+/qtscript_signalwatcher/libqtscript_signalwatcher.so
