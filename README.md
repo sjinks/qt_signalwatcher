@@ -1,5 +1,4 @@
-qt_signalwatcher
-================
+# qt_signalwatcher [![Build Status](https://secure.travis-ci.org/sjinks/qt_signalwatcher.png)](http://travis-ci.org/sjinks/qt_signalwatcher)
 
 A replacement for `QCoreApplication::watchUnixSignal()` and `QCoreApplication::unixSignal()`.
 
