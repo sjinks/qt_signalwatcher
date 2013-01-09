@@ -3,7 +3,7 @@ CONFIG  += ordered
 
 SUBDIRS += \
     src \
-    test
+    tests
 
-src.file  = src/signalwatcher.pro
-test.file = test/signalwatcher-test.pro
+src.file   = src/signalwatcher.pro
+tests.file = tests/signalwatcher-test.pro
