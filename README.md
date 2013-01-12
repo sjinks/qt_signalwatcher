@@ -2,7 +2,7 @@
 
 A replacement for `QCoreApplication::watchUnixSignal()` and `QCoreApplication::unixSignal()`.
 
-**Build**
+## Build
 
 Assuming that the current directory is the one with `signalwatcher.pro`:
 
@@ -14,7 +14,7 @@ Some systems have `qmake-qt4` instead of `qmake`.
 
 The above commands will generate the static library and `.prl` file in `../lib` directory and `test/tst_signalwatchertest` (this binary can be used to verify that the code works as expected).
 
-**Install**
+## Install
 
 After completing Build step run
 
@@ -32,7 +32,7 @@ For Windows this will copy `signalwatcher.h` to `../lib` directory.
 For *nix this will install `signalwatcher.h` to `/usr/include`, `libsignalwatcher.a` and `libsignalwatcher.prl` to `/usr/lib`, `libsignalwatcher.pc` to `/usr/lib/pkgconfig`.
 
 
-**Usage**
+## Usage
 
 ```c++
 #include "signalwatcher.h"
