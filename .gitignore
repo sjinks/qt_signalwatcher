@@ -3,3 +3,4 @@ Makefile
 Makefile.*
 moc_*.cpp
 /test/tst_signalwatchertest
+*.pro.user
