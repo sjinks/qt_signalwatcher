@@ -5,10 +5,7 @@ install:
   - sudo apt-get install libqt4-dev
 
 script:
-  - cd src
   - qmake
   - make
-  - cd ../tests
-  - qmake
-  - make
+  - cd tests
   - for i in ./tst_*; do ./$i; done
