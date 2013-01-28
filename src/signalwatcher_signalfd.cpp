@@ -161,7 +161,7 @@ void SignalWatcherPrivate::_q_handleSignal(void)
 }
 
 SignalWatcher::SignalWatcher(void)
-	: QObject(qApp), d_ptr(new SignalWatcherPrivate(this))
+	: QObject(QCoreApplication::instance()), d_ptr(new SignalWatcherPrivate(this))
 {
 }
 
@@ -180,6 +180,11 @@ bool SignalWatcher::unwatch(int sig)
 SignalWatcher::~SignalWatcher(void)
 {
 	SignalWatcherPrivate::instance = 0;
+
+#if QT_VERSION < 0x040600
+	delete this->d_ptr;
+	this->d_ptr = 0;
+#endif
 }
 
 SignalWatcher* SignalWatcher::instance(void)

@@ -4,8 +4,9 @@
 #include <QtCore/QtGlobal>
 #include <unistd.h>
 #include <fcntl.h>
+#include "qt4compat.h"
 
-inline qint64 safe_read(int fd, void* data, qint64 maxlen)
+Q_DECL_HIDDEN inline qint64 safe_read(int fd, void* data, qint64 maxlen)
 {
 	qint64 ret = 0;
 	do {
@@ -14,7 +15,7 @@ inline qint64 safe_read(int fd, void* data, qint64 maxlen)
 	return ret;
 }
 
-inline qint64 safe_write(int fd, const void* data, qint64 len)
+Q_DECL_HIDDEN inline qint64 safe_write(int fd, const void* data, qint64 len)
 {
 	qint64 ret = 0;
 	do {
@@ -23,7 +24,7 @@ inline qint64 safe_write(int fd, const void* data, qint64 len)
 	return ret;
 }
 
-inline void my_close(int& fd)
+Q_DECL_HIDDEN inline void my_close(int& fd)
 {
 	if (fd != -1) {
 		::close(fd);
@@ -31,12 +32,12 @@ inline void my_close(int& fd)
 	}
 }
 
-inline int set_cloexec(int fd)
+Q_DECL_HIDDEN inline int set_cloexec(int fd)
 {
 	return fcntl(fd, F_SETFD, FD_CLOEXEC);
 }
 
-inline int make_nonblocking(int fd)
+Q_DECL_HIDDEN inline int make_nonblocking(int fd)
 {
 	int res = fcntl(fd, F_GETFL);
 	if (res != -1) {

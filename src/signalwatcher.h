@@ -25,7 +25,11 @@ private:
 
 #if defined(Q_OS_UNIX) && !defined(Q_OS_SYMBIAN)
 	Q_DECLARE_PRIVATE(SignalWatcher)
+#if QT_VERSION >= 0x040600
 	QScopedPointer<SignalWatcherPrivate> d_ptr;
+#else
+	SignalWatcherPrivate* d_ptr;
+#endif
 	Q_PRIVATE_SLOT(d_func(), void _q_handleSignal(void))
 #endif
 };

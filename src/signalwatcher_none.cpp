@@ -6,7 +6,7 @@ class SignalWatcherPrivate {};
 static SignalWatcher* g_instance = 0;
 
 SignalWatcher::SignalWatcher(void)
-	: QObject(qApp)
+	: QObject(QCoreApplication::instance())
 {
 }
 

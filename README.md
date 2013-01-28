@@ -2,6 +2,10 @@
 
 A replacement for `QCoreApplication::watchUnixSignal()` and `QCoreApplication::unixSignal()`.
 
+## Requirements
+
+* Qt >= 4.2
+
 ## Build
 
 Assuming that the current directory is the one with `signalwatcher.pro`:

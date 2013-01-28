@@ -5,6 +5,8 @@ CONFIG  += console
 CONFIG  -= app_bundle
 TEMPLATE = app
 
+lessThan(QT_MAJOR_VERSION, 5): CONFIG += qtestlib
+
 HEADERS += \
 	signalwatchertest.h \
 

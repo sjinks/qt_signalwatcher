@@ -6,7 +6,8 @@ DESTDIR  = ../lib
 
 HEADERS += \
 	signalwatcher.h \
-	helpers_p.h
+	helpers_p.h \
+	qt4compat.h
 
 headers.files = signalwatcher.h
 
