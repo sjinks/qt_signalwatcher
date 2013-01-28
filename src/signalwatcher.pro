@@ -11,9 +11,9 @@ HEADERS += \
 headers.files = signalwatcher.h
 
 unix:!symbian {
-	exists(/usr/include/sys/signalfd.h):     SOURCES += signalwatcher_signalfd.cpp
-	else:exists(/usr/include/sys/eventfd.h): SOURCES += signalwatcher_eventfd.cpp
-	else:                                    SOURCES += signalwatcher_pipe.cpp
+	system('cc -E $$PWD/conftests/signalfd.h -o /dev/null 2> /dev/null'):     SOURCES += signalwatcher_signalfd.cpp
+	else:system('cc -E $$PWD/conftests/eventfd.h -o /dev/null 2> /dev/null'): SOURCES += signalwatcher_eventfd.cpp
+	else:                                                                     SOURCES += signalwatcher_pipe.cpp
 }
 else {
 	SOURCES += signalwatcher_none.cpp
