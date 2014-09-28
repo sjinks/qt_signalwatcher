@@ -1,7 +1,7 @@
 #include <QtCore/QCoreApplication>
 #include "signalwatcher.h"
 
-class SignalWatcherPrivate {};
+class Q_DECL_HIDDEN SignalWatcherPrivate {};
 
 static SignalWatcher* g_instance = 0;
 
@@ -20,6 +20,11 @@ bool SignalWatcher::unwatch(int sig)
 {
 	Q_UNUSED(sig)
 	return false;
+}
+
+bool SignalWatcher::watch(int sig, bool watch)
+{
+	return watch ? this->watch(sig) : this->unwatch(sig);
 }
 
 SignalWatcher::~SignalWatcher(void)

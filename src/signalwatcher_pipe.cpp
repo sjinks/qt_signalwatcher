@@ -9,7 +9,7 @@
 #include "signalwatcher.h"
 #include "helpers_p.h"
 
-class SignalWatcherPrivate {
+class Q_DECL_HIDDEN SignalWatcherPrivate {
 public:
 	~SignalWatcherPrivate(void);
 
@@ -213,6 +213,11 @@ bool SignalWatcher::unwatch(int sig)
 {
 	Q_D(SignalWatcher);
 	return d->unwatch(sig);
+}
+
+bool SignalWatcher::watch(int sig, bool watch)
+{
+	return watch ? this->watch(sig) : this->unwatch(sig);
 }
 
 SignalWatcher::~SignalWatcher(void)
