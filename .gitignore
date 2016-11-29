@@ -2,5 +2,6 @@
 Makefile
 Makefile.*
 moc_*.cpp
-/test/tst_signalwatchertest
+/tests/tst_signalwatchertest
+.qmake.stash
 *.pro.user
